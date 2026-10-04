@@ -18,7 +18,7 @@ jobs:
           # Replays the committed schedule that once reproduced the double booking.
           - mode: regression
             replay: .weavegate/schedules/sch_6f1ffd61cc07.json
-          # Explores every release order of the two sync-points.
+          # Sweeps every candidate schedule for the two sync-points (three passes by default).
           - mode: explore
             replay: ''
     steps:
