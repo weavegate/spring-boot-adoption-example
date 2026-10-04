@@ -1,0 +1,39 @@
+name: weavegate
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  gate:
+    name: gate (${{ matrix.mode }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Replays the committed schedule that once reproduced the double booking.
+          - mode: regression
+            replay: .weavegate/schedules/sch_6f1ffd61cc07.json
+          # Explores every release order of the two sync-points.
+          - mode: explore
+            replay: ''
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Build the weavegate test JAR
+        run: ./mvnw -B package
+      - id: weavegate
+        uses: weavegate/weavegate@v0.2.0-rc.1
+        with:
+          config: .weavegate/config.yaml
+          scenario: double-booking
+          replay: ${{ matrix.replay }}
+          artifact-name: weavegate-evidence-${{ matrix.mode }}
