@@ -31,7 +31,7 @@ jobs:
       - name: Build the weavegate test JAR
         run: ./mvnw -B package
       - id: weavegate
-        uses: weavegate/weavegate@v0.2.0-rc.1
+        uses: weavegate/weavegate@v0.2.0
         with:
           config: .weavegate/config.yaml
           scenario: double-booking
