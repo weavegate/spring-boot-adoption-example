@@ -21,7 +21,7 @@ public class ReservationService {
     @Transactional
     public boolean reserve(long seatId, String customer) {
         List<String> open = jdbc.queryForList(
-                "SELECT status FROM seat WHERE id = ? AND status = 'OPEN' FOR UPDATE", String.class, seatId);
+                "SELECT status FROM seat WHERE id = ? AND status = 'OPEN'", String.class, seatId);
         if (open.isEmpty()) {
             return false;
         }
