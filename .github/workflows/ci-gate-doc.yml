@@ -1,0 +1,26 @@
+name: weavegate gate
+on: pull_request
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - id: weavegate
+        uses: weavegate/weavegate@v0.2.0
+        with:
+          config: fixtures/matching-slice/.weavegate/config.yaml
+          scenario: concurrent-assign
+          variant: vulnerable
+          replay: sch_ba00582f9632
+          artifact-name: weavegate-evidence
+      - name: Read outputs even when the gate fails
+        if: always()
+        env:
+          EXIT_CODE: ${{ steps.weavegate.outputs.exit-code }}
+          VERDICT: ${{ steps.weavegate.outputs.verdict }}
+          ARTIFACT_URL: ${{ steps.weavegate.outputs.artifact-url }}
+        run: printf 'exit=%s verdict=%s artifact=%s\n' "$EXIT_CODE" "$VERDICT" "$ARTIFACT_URL"
