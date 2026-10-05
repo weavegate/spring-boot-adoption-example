@@ -17,7 +17,7 @@
 
   <properties>
     <java.version>21</java.version>
-    <weavegate.version>0.2.0-rc.1</weavegate.version>
+    <weavegate.version>0.2.0</weavegate.version>
   </properties>
 
   <dependencies>
